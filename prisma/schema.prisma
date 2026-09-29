@@ -1,0 +1,495 @@
+// ============================================================
+// Civora - Prisma Schema for MySQL
+// Complete database schema for civic issue detection platform
+// ============================================================
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================================
+// ENUMS - Define all the possible values for various fields
+// ============================================================
+
+// User roles - determines what a user can do in the system
+enum Role {
+  CITIZEN        // Regular user who reports issues
+  ORG_STAFF      // Staff member of an organization
+  ORG_ADMIN      // Admin of an organization
+  PLATFORM_ADMIN // Super admin of the entire platform
+}
+
+// Reputation levels - earned through community participation
+enum ReputationLevel {
+  NEW_CONTRIBUTOR       // Just joined
+  COMMUNITY_CONTRIBUTOR // Active participant
+  VERIFIED_CONTRIBUTOR  // Trusted member
+  COMMUNITY_CHAMPION    // Top contributor
+}
+
+// Types of organizations that can use Civora
+enum OrgType {
+  MUNICIPALITY
+  WARD
+  NGO
+  SCHOOL
+  UNIVERSITY
+  HOSPITAL
+  HOTEL
+  HOUSING_SOCIETY
+  PRIVATE_COMPANY
+  COMMUNITY_ORG
+}
+
+// Issue lifecycle statuses
+enum IssueStatus {
+  REPORTED    // Just submitted by citizen
+  UNDER_REVIEW // Being reviewed by org
+  VERIFIED    // Confirmed as real issue
+  ASSIGNED    // Assigned to a department
+  IN_PROGRESS // Being worked on
+  PENDING     // Waiting for something
+  RESOLVED    // Fixed (needs citizen verification)
+  REOPENED    // Was resolved but reopened
+  REJECTED    // Not a valid issue
+}
+
+// How severe is the issue?
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// How dangerous is this issue to public safety?
+enum SafetyRisk {
+  LOW
+  MEDIUM
+  HIGH
+  EXTREME
+}
+
+// Computed priority level from our algorithm
+enum PriorityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// When citizens vote on whether a resolution actually fixed things
+enum ResolutionVerdict {
+  FIXED
+  PARTIALLY_FIXED
+  STILL_EXISTS
+}
+
+// Reasons a citizen might dispute an issue report
+enum DisputeReason {
+  ALREADY_RESOLVED
+  INACCURATE_LOCATION
+  DUPLICATE
+  FAKE_OR_SPAM
+  OTHER
+}
+
+// ============================================================
+// MODELS - The actual database tables
+// ============================================================
+
+// ----- USER & PROFILE -----
+
+// Every person who uses Civora has a User record
+model User {
+  id            String   @id @default(cuid()) // Unique ID
+  name          String                          // Display name
+  email         String   @unique               // Login email (must be unique)
+  passwordHash  String                          // Bcrypt-hashed password
+  role          Role     @default(CITIZEN)      // What role they have
+  avatar        String?                         // Profile picture URL (optional)
+  phoneNumber   String?                         // Phone number (optional)
+  isVerified    Boolean  @default(false)        // Email verified?
+  createdAt     DateTime @default(now())        // When they signed up
+  updatedAt     DateTime @updatedAt             // Last profile update
+
+  // Relations - what this user is connected to
+  profile         Profile?                      // Their extended profile
+  reputation      Reputation?                   // Their reputation score
+  reportedIssues  Issue[]         @relation("ReportedBy") // Issues they reported
+  confirmations   IssueConfirmation[]            // Issues they confirmed
+  disputes        IssueDispute[]                 // Issues they disputed
+  follows         IssueFollow[]                  // Issues they follow
+  comments        IssueComment[]                 // Comments they wrote
+  statusChanges   IssueStatusHistory[]           // Status changes they made
+  orgMemberships  OrganizationMember[]           // Organizations they belong to
+  notifications   Notification[]                 // Their notifications
+  resolutionVotes ResolutionVerificationVote[]   // Their resolution votes
+}
+
+// Extended profile information for a user
+model Profile {
+  id           String   @id @default(cuid())
+  userId       String   @unique                // One profile per user
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio          String?  @db.Text               // About me text
+  country      String   @default("Nepal")
+  province     String?
+  district     String?
+  city         String?
+  ward         String?
+  latitude     Decimal? @db.Decimal(10, 7)     // GPS latitude
+  longitude    Decimal? @db.Decimal(10, 7)     // GPS longitude
+  reportsCount Int      @default(0)            // How many issues reported
+  resolvedCount Int     @default(0)            // How many led to resolution
+  updatedAt    DateTime @updatedAt
+}
+
+// Reputation tracking for gamification
+model Reputation {
+  id           String          @id @default(cuid())
+  userId       String          @unique
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  points       Int             @default(10)     // Reputation points
+  level        ReputationLevel @default(NEW_CONTRIBUTOR)
+  helpfulVotes Int             @default(0)      // Times others found them helpful
+  updatedAt    DateTime        @updatedAt
+}
+
+// ----- ORGANIZATION & DEPARTMENTS -----
+
+// An organization (like a municipality) that handles issues
+model Organization {
+  id               String   @id @default(cuid())
+  name             String                        // "Pokhara Metropolitan City"
+  slug             String   @unique              // "pokhara-metro" (used in URLs)
+  orgType          OrgType  @default(MUNICIPALITY)
+  description      String?  @db.Text
+  logo             String?                       // Logo image URL
+  email            String                        // Contact email
+  phone            String?
+  website          String?
+  country          String   @default("Nepal")
+  province         String?
+  district         String?
+  city             String?
+  wardArea         String?
+  latitude         Decimal? @db.Decimal(10, 7)   // HQ location
+  longitude        Decimal? @db.Decimal(10, 7)
+  coverageRadiusKm Float    @default(15.0)       // Service area radius
+  isVerified       Boolean  @default(true)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  departments    Department[]
+  members        OrganizationMember[]
+  assignedIssues Issue[]
+  subscription   OrganizationSubscription?
+
+  @@index([city, orgType])
+}
+
+// A department within an organization (e.g., "Road Infrastructure")
+model Department {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String                          // "Road Infrastructure"
+  slug           String                          // "road-infrastructure"
+  description    String?      @db.Text
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  members        OrganizationMember[]
+  assignedIssues Issue[]
+
+  @@unique([organizationId, slug])            // Slugs unique within each org
+}
+
+// Links a user to an organization (and optionally a department)
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  departmentId   String?
+  department     Department?  @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  role           Role         @default(ORG_STAFF)
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, userId])          // One membership per org per user
+}
+
+// ----- ISSUE CATEGORIES -----
+
+// Predefined categories for issues (Roads, Water, Waste, etc.)
+model IssueCategory {
+  id                  String   @id @default(cuid())
+  name                String   @unique           // "Road Damage"
+  slug                String   @unique           // "road-damage"
+  icon                String   @default("AlertCircle") // Lucide icon name
+  colorCode           String   @default("#f97316")     // Hex color for badges
+  defaultSeverity     Severity @default(MEDIUM)
+  isEmergencyCategory Boolean  @default(false)    // Auto-flag as emergency?
+  description         String?  @db.Text
+  issues              Issue[]
+}
+
+// ----- THE CORE: ISSUES -----
+
+// A civic issue reported by a citizen
+model Issue {
+  id                     String        @id @default(cuid())
+  trackingCode           String        @unique  // "CIV-1042" - human-readable ID
+  title                  String                  // Short description
+  description            String        @db.Text // Detailed description
+  categoryId             String
+  category               IssueCategory @relation(fields: [categoryId], references: [id])
+  reporterId             String
+  reporter               User          @relation("ReportedBy", fields: [reporterId], references: [id])
+
+  // Status & Severity
+  status                 IssueStatus   @default(REPORTED)
+  severity               Severity      @default(MEDIUM)
+  isEmergency            Boolean       @default(false)
+  safetyRisk             SafetyRisk    @default(MEDIUM)
+  affectedPeopleEst      Int           @default(50)
+
+  // Location (GPS coordinates + human-readable address)
+  latitude               Decimal       @db.Decimal(10, 7)
+  longitude              Decimal       @db.Decimal(10, 7)
+  address                String
+  country                String        @default("Nepal")
+  province               String?
+  district               String?
+  city                   String
+  ward                   String?
+
+  // Computed Metrics (calculated by our algorithms)
+  priorityScore          Int           @default(30)    // 0-100 score
+  priorityLevel          PriorityLevel @default(MEDIUM)
+  priorityExplanation    String?       @db.Text        // Human-readable why
+  communityConfidence    Int           @default(50)    // 0-100% confidence
+  confirmationsCount     Int           @default(0)     // How many confirmed
+  disputesCount          Int           @default(0)     // How many disputed
+  followersCount         Int           @default(0)     // How many following
+
+  // Which organization/department is handling this?
+  assignedOrgId          String?
+  assignedOrg            Organization? @relation(fields: [assignedOrgId], references: [id], onDelete: SetNull)
+  assignedDepartmentId   String?
+  assignedDepartment     Department?   @relation(fields: [assignedDepartmentId], references: [id], onDelete: SetNull)
+
+  // Duplicate tracking
+  potentialDuplicateOfId String?
+  potentialDuplicateOf   Issue?        @relation("DuplicateGroup", fields: [potentialDuplicateOfId], references: [id], onDelete: SetNull)
+  duplicateReports       Issue[]       @relation("DuplicateGroup")
+
+  needsReverification    Boolean       @default(false)
+  resolvedAt             DateTime?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  // Relations
+  images                 IssueImage[]
+  confirmations          IssueConfirmation[]
+  disputes               IssueDispute[]
+  follows                IssueFollow[]
+  comments               IssueComment[]
+  statusHistory          IssueStatusHistory[]
+  resolutionEvidence     ResolutionEvidence?
+  aiAnalysis             AIAnalysis?
+  notifications          Notification[]
+
+  // Indexes for fast lookups
+  @@index([status, priorityScore])
+  @@index([latitude, longitude])
+  @@index([city, status])
+  @@index([assignedOrgId, status])
+}
+
+// Photos attached to an issue
+model IssueImage {
+  id        String   @id @default(cuid())
+  issueId   String
+  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  url       String                            // Path to the image file
+  caption   String?                           // Optional description
+  createdAt DateTime @default(now())
+}
+
+// ----- COMMUNITY ACTIONS -----
+
+// A citizen confirming "yes, this issue is real"
+model IssueConfirmation {
+  id            String   @id @default(cuid())
+  issueId       String
+  issue         Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment       String?  @db.Text              // Optional comment
+  evidenceImage String?                        // Optional supporting photo
+  createdAt     DateTime @default(now())
+
+  @@unique([issueId, userId])                 // One confirmation per user per issue
+}
+
+// A citizen disputing an issue report
+model IssueDispute {
+  id            String        @id @default(cuid())
+  issueId       String
+  issue         Issue         @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason        DisputeReason @default(OTHER)
+  details       String        @db.Text          // Why they're disputing
+  evidenceImage String?
+  createdAt     DateTime      @default(now())
+
+  @@unique([issueId, userId])                 // One dispute per user per issue
+}
+
+// A citizen following an issue to get notifications
+model IssueFollow {
+  id        String   @id @default(cuid())
+  issueId   String
+  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([issueId, userId])                 // One follow per user per issue
+}
+
+// Comments on issues (can be from citizens or official updates)
+model IssueComment {
+  id               String   @id @default(cuid())
+  issueId          String
+  issue            Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content          String   @db.Text
+  isOfficialUpdate Boolean  @default(false)    // True = from org staff
+  createdAt        DateTime @default(now())
+}
+
+// ----- AUDIT TRAIL -----
+
+// Every status change is recorded here
+model IssueStatusHistory {
+  id          String      @id @default(cuid())
+  issueId     String
+  issue       Issue       @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  changedById String?
+  changedBy   User?       @relation(fields: [changedById], references: [id], onDelete: SetNull)
+  oldStatus   IssueStatus                       // What it was before
+  newStatus   IssueStatus                       // What it changed to
+  comment     String?     @db.Text              // Why it changed
+  createdAt   DateTime    @default(now())
+
+  @@index([issueId, createdAt])
+}
+
+// ----- RESOLUTION & VERIFICATION -----
+
+// Evidence that an issue has been resolved (before/after photos)
+model ResolutionEvidence {
+  id                  String   @id @default(cuid())
+  issueId             String   @unique          // One resolution per issue
+  issue               Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  submittedById       String                     // Who submitted the evidence
+  afterImageUrl       String                     // Photo of the fix
+  description         String   @db.Text          // What was done
+  completionDate      DateTime @default(now())
+  fixedVotes          Int      @default(0)       // Citizens who say "yes, fixed"
+  partiallyFixedVotes Int      @default(0)       // Citizens who say "partially"
+  stillExistsVotes    Int      @default(0)       // Citizens who say "not fixed"
+  createdAt           DateTime @default(now())
+
+  votes               ResolutionVerificationVote[]
+}
+
+// A citizen's vote on whether a resolution actually worked
+model ResolutionVerificationVote {
+  id           String             @id @default(cuid())
+  resolutionId String
+  resolution   ResolutionEvidence @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verdict      ResolutionVerdict  @default(FIXED)
+  comment      String?            @db.Text
+  createdAt    DateTime           @default(now())
+
+  @@unique([resolutionId, userId])            // One vote per user per resolution
+}
+
+// ----- AI & ANALYTICS -----
+
+// AI-generated analysis for each issue
+model AIAnalysis {
+  id                     String   @id @default(cuid())
+  issueId                String   @unique
+  issue                  Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  aiSummary              String?  @db.Text       // AI-generated summary
+  suggestedSeverity      Severity @default(MEDIUM)
+  highestSimilarityScore Float    @default(0.0)  // How similar to existing issues
+  duplicateCandidatesJson Json?                   // JSON array of potential dupes
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+// ----- NOTIFICATIONS -----
+
+// In-app notifications for users
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issueId   String?
+  issue     Issue?   @relation(fields: [issueId], references: [id], onDelete: SetNull)
+  type      String                              // "ISSUE_CONFIRMED", "STATUS_CHANGED", etc.
+  title     String
+  message   String   @db.Text
+  actionUrl String?                             // URL to navigate to
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+
+// ----- SUBSCRIPTION PLANS -----
+
+// Available subscription plans (Free, Professional, Enterprise)
+model Plan {
+  id            String   @id @default(cuid())
+  name          String   @unique               // "Free", "Professional", "Enterprise"
+  slug          String   @unique
+  priceUsd      Decimal  @db.Decimal(10, 2)
+  maxDepts      Int      @default(3)
+  maxStaff      Int      @default(10)
+  hasAiFeatures Boolean  @default(true)
+  hasApiAccess  Boolean  @default(false)
+  subscriptions OrganizationSubscription[]
+}
+
+// Links an organization to their subscription plan
+model OrganizationSubscription {
+  id             String       @id @default(cuid())
+  organizationId String       @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planId         String
+  plan           Plan         @relation(fields: [planId], references: [id])
+  status         String       @default("ACTIVE")
+  startDate      DateTime     @default(now())
+  endDate        DateTime?
+  isMock         Boolean      @default(true)   // True = demo data
+}
