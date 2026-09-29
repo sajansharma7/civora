@@ -30,7 +30,7 @@ export default function ErrorPage({
             System Alert
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Something Went Wrong
+            Something Went Wrong.
           </h1>
           <p className="text-xs text-slate-500 max-w-xs mx-auto">
             An unexpected error occurred in the civic portal pipeline. Our telemetry has captured the incident.

@@ -96,7 +96,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
   return (
     <div className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
       {/* Top Console Navigation & Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 shadow-sm font-black text-xl">
@@ -150,7 +150,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white rounded-3xl p-6 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Total Reports</span>
             <Layers className="w-5 h-5 text-indigo-500" />
@@ -159,7 +159,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
           <p className="text-xs text-slate-500 mt-1">Managed across all municipal wards</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Critical Hazards</span>
             <ShieldAlert className="w-5 h-5 text-rose-500" />
@@ -168,7 +168,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
           <p className="text-xs text-slate-500 mt-1">Priority score ≥ 80 or Emergency flagged</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Active In-Progress</span>
             <Clock className="w-5 h-5 text-sky-500" />
@@ -177,7 +177,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
           <p className="text-xs text-slate-500 mt-1">Assigned to field maintenance teams</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Resolution Rate</span>
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
@@ -190,7 +190,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
       {/* Visualizations Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Category Breakdown (Bar Chart) */}
-        <div className="bg-white rounded-3xl p-6 sm:p-7 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-bold text-base text-slate-900">Issues by Category</h3>
@@ -218,7 +218,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
         </div>
 
         {/* Status Funnel (Donut Chart) */}
-        <div className="bg-white rounded-3xl p-6 sm:p-7 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-bold text-base text-slate-900">Lifecycle Status Breakdown</h3>
@@ -264,7 +264,7 @@ export default function OrgDashboardPage({ params }: OrgDashboardProps) {
       </div>
 
       {/* Immediate Dispatch Queue (Top Urgent Issues) */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-bold text-lg text-slate-900">Immediate Action Dispatch Queue</h3>

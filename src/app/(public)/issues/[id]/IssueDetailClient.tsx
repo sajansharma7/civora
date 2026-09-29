@@ -298,7 +298,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
         )}
 
         {/* Top Header Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="font-mono text-sm font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-200 shadow-inner">
@@ -500,7 +500,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
             )}
 
             {/* Description & Impact Card */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm space-y-4" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
               <h3 className="font-bold text-base text-slate-900">Problem Description & Impact</h3>
               <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
                 {issue.description}
@@ -523,7 +523,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
             </div>
 
             {/* Official Audit Trail History */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
               <div className="flex items-center gap-2 mb-6">
                 <History className="w-5 h-5 text-indigo-600" />
                 <h3 className="font-bold text-base text-slate-900">Audit Trail & Status History</h3>
@@ -557,7 +557,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
             </div>
 
             {/* Comments Thread & Official Updates */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm space-y-6" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-5 h-5 text-indigo-600" />
@@ -626,7 +626,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
           {/* Right Column (Actions, Priority Engine, Confidence) */}
           <div className="space-y-6">
             {/* COMMUNITY ACTION HUB CARD */}
-            <div className="bg-white rounded-3xl p-6 border shadow-sm space-y-4" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
               <h3 className="font-bold text-sm uppercase tracking-wider text-slate-400">
                 Community Verification Hub
               </h3>
@@ -662,7 +662,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
             </div>
 
             {/* DETERMINISTIC SMART PRIORITY CARD */}
-            <div className="bg-white rounded-3xl p-6 border shadow-sm space-y-4" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -703,7 +703,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
             </div>
 
             {/* DYNAMIC COMMUNITY CONFIDENCE METER */}
-            <div className="bg-white rounded-3xl p-6 border shadow-sm space-y-4" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                   Community Confidence
@@ -726,7 +726,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
             </div>
 
             {/* MUNICIPALITY DISPATCH CARD */}
-            <div className="bg-white rounded-3xl p-6 border shadow-sm space-y-3" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                 Assigned Authority
               </span>
@@ -754,7 +754,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
         {/* CONFIRM MODAL */}
         {confirmModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg text-slate-900">Confirm Community Issue</h3>
                 <button onClick={() => setConfirmModalOpen(false)} className="p-1 rounded-lg text-slate-400 hover:bg-slate-100">
@@ -796,7 +796,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
         {/* DISPUTE MODAL */}
         {disputeModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg text-slate-900">Dispute Report</h3>
                 <button onClick={() => setDisputeModalOpen(false)} className="p-1 rounded-lg text-slate-400 hover:bg-slate-100">
@@ -855,7 +855,7 @@ export default function IssueDetailClient({ initialIssue }: IssueDetailClientPro
         {/* RESOLVE EVIDENCE MODAL (Staff/Admin) */}
         {resolveModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg text-slate-900">Submit Resolution Evidence</h3>
                 <button onClick={() => setResolveModalOpen(false)} className="p-1 rounded-lg text-slate-400 hover:bg-slate-100">

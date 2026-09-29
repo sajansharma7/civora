@@ -158,7 +158,7 @@ export default function OrgIssuesPage({ params }: OrgIssuesPageProps) {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-3xl p-6 border shadow-sm overflow-x-auto" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs overflow-x-auto">
         {loading ? (
           <div className="py-16 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
             <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />

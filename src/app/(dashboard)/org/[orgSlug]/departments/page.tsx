@@ -54,8 +54,7 @@ export default async function OrgDepartmentsPage({ params }: DeptPageProps) {
         {org.departments.map((dept) => (
           <div
             key={dept.id}
-            className="bg-white rounded-3xl p-6 border shadow-sm space-y-4"
-            style={{ borderColor: 'var(--border-color)' }}
+            className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4"
           >
             <div className="flex items-start justify-between">
               <div>

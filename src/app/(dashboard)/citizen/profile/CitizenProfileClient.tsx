@@ -222,7 +222,7 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Top Profile Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm mb-8" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs mb-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center font-extrabold text-3xl shadow-lg">
@@ -282,7 +282,7 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
       {/* Reputation & Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Reputation Card */}
-        <div className="bg-white rounded-3xl p-6 border shadow-sm relative overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -312,7 +312,7 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
         </div>
 
         {/* Total Reports Stat */}
-        <div className="bg-white rounded-3xl p-6 border shadow-sm flex items-center gap-5" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex items-center gap-5">
           <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
             <TrendingUp className="w-7 h-7" />
           </div>
@@ -326,7 +326,7 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
         </div>
 
         {/* Helpful Community Votes */}
-        <div className="bg-white rounded-3xl p-6 border shadow-sm flex items-center gap-5" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex items-center gap-5">
           <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <Heart className="w-7 h-7 fill-emerald-600" />
           </div>
@@ -339,7 +339,7 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
       </div>
 
       {/* Badges Showcase */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm mb-8" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs mb-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-indigo-600" />
@@ -378,8 +378,8 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
       </div>
 
       {/* Tabs for Reported Issues & Follows */}
-      <div className="bg-white rounded-3xl border shadow-sm overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-        <div className="border-b px-6 pt-4 flex items-center gap-6" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div className="border-b border-slate-100 px-6 pt-4 flex items-center gap-6">
           <button
             onClick={() => setActiveTab('reports')}
             className={`pb-4 text-sm font-semibold border-b-2 flex items-center gap-2 transition-colors ${
@@ -520,7 +520,7 @@ export default function CitizenProfileClient({ initialUser }: CitizenProfileClie
       {/* Edit Profile Modal */}
       {isEditing && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold text-slate-900">Edit Citizen Profile</h3>
               <button

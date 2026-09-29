@@ -44,7 +44,7 @@ export default async function OrgSettingsPage({ params }: SettingsPageProps) {
       </div>
 
       {/* Subscription Plans Grid */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm space-y-6" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             SaaS License Tier
@@ -121,7 +121,7 @@ export default async function OrgSettingsPage({ params }: SettingsPageProps) {
       </div>
 
       {/* Organization Profile Details */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border shadow-sm space-y-4" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
         <h3 className="font-bold text-base text-slate-900">Organization Metadata</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
